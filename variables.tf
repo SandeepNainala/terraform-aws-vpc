@@ -1,10 +1,10 @@
 ##### project ####
 variable "project_name" {
-  type = "string"
+  type = string
 }
 
 variable "environment" {
-  type = sting
+  type = string
   default = "dev"
 }
 
