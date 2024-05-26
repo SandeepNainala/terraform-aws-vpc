@@ -47,7 +47,7 @@ resource "aws_subnet" "private" {
   #map_public_ip_on_launch = true    # by default it's value is false and we don't need that because it is a private
   cidr_block = var.private_subnet_cidrs[count.index]
 
-  tags = merge (
+  tags = merge(
     var.common_tags,
     var.private_subnet_cidrs,
     {
@@ -92,7 +92,7 @@ resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
 
-  tags = merge (
+  tags = merge(
     var.common_tags,
     var.nat_gateway_tags,
     {
