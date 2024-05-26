@@ -51,7 +51,7 @@ resource "aws_subnet" "private" {
     var.common_tags,
     var.private_subnet_cidrs,
     {
-      Name = "${local.resource_name}-private-${local.az_names[count.index]}"
+      Name = local.resource_name
     }
   )
 }
@@ -75,7 +75,7 @@ resource "aws_db_subnet_group" "default" {
   name = "${local.resource_name}"
   subnet_ids = aws_subnet.database[*].id
 
-  ttags = merge(
+  tags = merge(
     var.common_tags,
     var.database_subnet_group_tags,
     {
