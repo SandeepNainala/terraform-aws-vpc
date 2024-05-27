@@ -1,7 +1,7 @@
-/*
-output "azs" {
-  value = data.aws_availability_zones.available.names
-}*/
+
+# output "azs" {
+#     value = data.aws_availability_zones.available.names
+# }
 
 output "vpc_id" {
   value = aws_vpc.main.id
@@ -28,5 +28,6 @@ output "database_subnet_group_name" {
 }
 
 output "igw_id" {
-  value = aws_internet_gateway.igw.id
+  value = aws_internet_gateway.gw.id
 }
+

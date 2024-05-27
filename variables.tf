@@ -1,3 +1,4 @@
+
 #### Project ####
 variable "project_name"{
   type = string
