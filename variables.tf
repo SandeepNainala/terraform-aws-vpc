@@ -48,3 +48,17 @@ variable "public_subnet_cidrs_tags" {
   type = map
   default = {}
 }
+
+#### Private Subnet ####
+variable "private_subnet_cidrs" {
+  type = list
+  validation {
+    condition = length(var.private_subnet_cidrs) == 2
+    error_message = "Please provide exactly 2 private subnet CIDRs"
+  }
+}
+
+variable "private_subnet_cidrs_tags" {
+  type = map
+  default = {}
+}

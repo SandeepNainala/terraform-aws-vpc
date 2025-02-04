@@ -41,3 +41,19 @@ resource "aws_subnet" "public" {
     }
   )
 }
+
+### Private Subnets ###
+resource "aws_subnet" "private" {
+  count = length(var.private_subnet_cidrs)  # Create one public subnet per public subnet CIDR block in the list of public_subnet_cidrs
+  availability_zone = local.az_names[count.index]
+  vpc_id = aws_vpc.main.id
+  cidr_block = var.private_subnet_cidrs[count.index]  # Use the CIDR block from the list of public_subnet_cidrs for this subnet creation iteration
+
+  tags = merge(      # Merge all maps into one
+    var.common_tags,
+    var.private_subnet_cidrs_tags,
+    {
+      Name = "${local.resource_name}-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
+    }
+  )
+}
