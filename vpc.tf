@@ -131,6 +131,7 @@ resource "aws_route_table" "database" {
   )
 }
 
+#### Route Table Routes ####
 resource "aws_route" "public_route" {
   route_table_id = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
@@ -148,6 +149,8 @@ resource "aws_route" "database_route_nat" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.nat.id
 }
+
+#### Route Table and Subnet Associations ####
 resource "aws_route_table_association" "public" {
   count = length(var.public_subnet_cidrs)     # Create one association per public subnet CIDR block in the list of public_subnet_cidrs
   route_table_id = aws_route_table.public.id
@@ -158,4 +161,10 @@ resource "aws_route_table_association" "private" {
   count = length(var.private_subnet_cidrs)     # Create one association per private subnet CIDR block in the list of private_subnet_cidrs
   route_table_id = aws_route_table.private.id
   subnet_id = aws_subnet.private[*].id        # * is a wildcard that tells Terraform to use all of the public subnet IDs here we have 2 private subnets
+}
+
+resource "aws_route_table_association" "database" {
+  count = length(var.database_subnet_cidrs)     # Create one association per database subnet CIDR block in the list of database_subnet_cidrs
+  route_table_id = aws_route_table.database.id
+  subnet_id = aws_subnet.database[*].id        # * is a wildcard that tells Terraform to use all of the public subnet IDs here we have 2 database subnets
 }
