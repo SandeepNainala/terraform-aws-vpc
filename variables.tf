@@ -76,3 +76,9 @@ variable "database_subnet_cidrs_tags" {
   type = map
   default = {}
 }
+
+#### NAT Gateway ####
+variable "nat_gateway_tags" {
+  type = map
+  default = {}
+}

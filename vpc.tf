@@ -26,7 +26,7 @@ resource "aws_internet_gateway" "gw" {
 }
 
 ### Public Subnets ###
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public" {  # first name is public[0], second name is public[1], etc.
   count = length(var.public_subnet_cidrs)  # Create one public subnet per public subnet CIDR block in the list of public_subnet_cidrs
   availability_zone = local.az_names[count.index]
   map_public_ip_on_launch = true
@@ -37,7 +37,7 @@ resource "aws_subnet" "public" {
     var.common_tags,
     var.public_subnet_cidrs_tags,
     {
-      Name = "${local.resource_name}-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
+      Name = "${local.resource_name}-public-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
     }
   )
 }
@@ -53,7 +53,7 @@ resource "aws_subnet" "private" {
     var.common_tags,
     var.private_subnet_cidrs_tags,
     {
-      Name = "${local.resource_name}-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
+      Name = "${local.resource_name}-private-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
     }
   )
 }
@@ -69,7 +69,25 @@ resource "aws_subnet" "database" {
     var.common_tags,
     var.database_subnet_cidrs_tags,
     {
-      Name = "${local.resource_name}-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
+      Name = "${local.resource_name}-database-${local.az_names[count.index]}" # Use the AZ name from the list of az_names for this subnet creation iteration to create a unique name for this subnet resource instance
     }
   )
+}
+
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat" {
+  subnet_id = aws_subnet.public[0].id
+  allocation_id = aws_eip.nat.id
+
+  tags = merge(      # Merge all maps into one
+    var.common_tags,
+    var.nat_gateway_tags,
+    {
+      Name = "${local.resource_name}"    #expense-dev
+    }
+  )
+  depends_on = [aws_internet_gateway.gw]  # this is explicitly telling Terraform that the NAT Gateway resource depends on the Internet Gateway resource
 }
