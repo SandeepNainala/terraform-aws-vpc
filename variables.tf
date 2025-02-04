@@ -43,3 +43,8 @@ variable "public_subnet_cidrs" {
     error_message = "Please provide exactly 2 public subnet CIDRs"
   }
 }
+
+variable "public_subnet_cidrs_tags" {
+  type = map
+  default = {}
+}
